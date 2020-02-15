@@ -1,5 +1,5 @@
-// Content script is “a JavaScript file that runs
-// in the context of web pages.”
+// Content script is "a JavaScript file that runs
+// in the context of web pages."
 
 // Dictionary of Comparisons
 var dict = {
@@ -57,42 +57,111 @@ function safeText(htmlobj) {
   }
 }
 
-// Retrive price
-let price = document.getElementById("priceblock_ourprice");
-if (price == null) {
-  price = document.getElementById("priceblock_dealprice");
-}
-
-if (price != null) {
+function make_popup(price) {
   //Get price information
   var priceString = price.innerHTML;
   var pc = safeText(price.innerHTML);
   var ri = randKey(dict);
   var color = setColor(pc, ri);
-  price.style.cssText = "color: black; background-color: " + color;
 
   // Init popup window
   var popup = document.createElement("div");
   var productInfo = document.createTextNode(compare(pc, ri));
-  popup.id = "popup";
-  popup.style.display = "none"; // start as unseen
+  popup.style.display = "block";
+  popup.style.color = "black";
+  popup.style.padding = "5px";
+  popup.style.backgroundColor = color;
+  popup.style.position = "absolute";
   popup.appendChild(productInfo);
 
-  // Append back onto price
-  price.appendChild(popup);
-
   // When hovering over, show popup
-  price.onmouseover = function() {
-    document.getElementById("popup").style.cssText =
-      "color: black; padding: 5px; background-color: " +
-      color +
-      "; display: block;";
-  };
+  // price.onmouseover = function(event) {
+  price.addEventListener("mouseover", event => {
+    popup.style.left = (event.pageX + 1) + "px";
+    popup.style.top  = (event.pageY + 1) + "px";
+    document.body.appendChild(popup);
+  });
   // Otherwise don't show popup
-  price.onmouseout = function() {
-    document.getElementById("popup").style.cssText =
-      "color: black; padding: 5px; background-color: " +
-      color +
-      "; display: none;";
-  };
+  // price.onmouseout = function(event) {
+  price.addEventListener("mouseout", _ => {
+    document.body.removeChild(popup);
+  });
 }
+
+const TEXT_NODE = 3;  // just the DOM nodeType property for text nodes
+
+// cute little helper function for pairing up items in a list
+function pair(acc, _, i, arr) {
+  if (i % 2 === 0)
+    acc.push(arr.slice(i, i+2));
+  return acc;
+}
+
+// parse text for a price
+// INPUT  text : string
+// OUTPUT [(s,i,j)], where
+//           s : string is the price
+//           i : int is the start index
+//           j : int is the end index
+// EXAMPLE parse_text("that'll be $6.43, please") ==> [["$6.43", 11, 16]]
+function parse_text(text) {
+  // I love writing regexps, don't you?
+  var regexp = /\$\s*\d+(?:\.\d\d)?/g;
+  var result = [];
+  while ((price = regexp.exec(text)) != null) {
+    result.push([price[0], price.index, price.index + price[0].length])
+  }
+  return result;
+}
+
+// make a price tag <span> from one of the outputs of parse_text
+// e.g. parse_text.map(make_tag)
+function make_tag(price) {
+  var span = document.createElement("span");
+  span.textContent = price[0].replace(/\s/g, "");
+
+  // TODO: scale color based on price?
+  span.style.backgroundColor = "#ffcf40";
+  span.style.borderRadius = "5px";
+  span.style.padding = "1px";
+  span.style.display = "inline-block";  // somewhat questionable...
+  return span;
+}
+
+// go through a function and mark all the prices in the text by replacing
+// them with highlighted span's
+// e.g. mark_prices(document.body)
+function mark_prices(node) {
+  return Array.from(node.childNodes).map(child => {
+    if (child.nodeType === TEXT_NODE) {
+
+      // extract the price list and split the text segments accordingly
+      let text = child.textContent;
+      let prices = parse_text(text);
+      let indices = prices.map(x => x.slice(1))
+                          .reduce((x,y) => x.concat(y), []);
+      let tags = prices.map(make_tag);
+      let segments =
+        [0].concat(indices)
+           .concat([text.length])
+           .reduce(pair, [])
+           .map(i => text.slice(i[0], i[1]))
+
+      // create the new pretty node and replace the old text node with it
+      let fancy = document.createElement("span");
+      fancy.appendChild(document.createTextNode(segments[0]));
+      tags.forEach((tag, i) => {
+        fancy.appendChild(tag);
+        fancy.appendChild(document.createTextNode(segments[i+1]));
+      });
+      node.insertBefore(fancy, child);
+      node.removeChild(child);
+      return tags
+    } else {
+      return mark_prices(child);
+    }
+  }).reduce((x,y) => x.concat(y), []);
+}
+
+mark_prices(document.body).forEach(make_popup);
+
