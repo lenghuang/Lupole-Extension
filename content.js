@@ -3,11 +3,18 @@
 
 // Dictionary of Comparisons
 var dict = {
-  "cups of coffee": 2.7,
-  "chipotle chicken bowls": 6.5,
+  "Starbucks Venti Caramel Macchiatos": 4.75,
+  "bottles of refreshing and hydrating water": 1.45,
+  "Chipotle chicken bowls": 6.5,
   "years of tuition at CMU": 76543,
   "pairs of Lulu Lemon leggings": 120,
-  "blocks for Schatz": 11.05
+  "months of Spotify Premium": 9.99,
+  "acres of land in Texas": 2735,
+  "sheets of Five Star reinforced leaf paper": 0.02,
+  "tons of frozen spinach": 144,
+  "lunchable extra cheesy pizza packages": 1.98,
+  "dinner blocks at CMU": 11.08,
+  "bags of Shin Raymun": 3.76
 };
 
 // Return random key from comparisons
@@ -36,10 +43,10 @@ function setColor(pc, ri) {
   var x = parseFloat(pc.slice(1, pc.length));
   var y = dict[ri];
   var m = Math.floor(x / y);
-  if (m > 300) {
+  if (m > 200) {
     return "hsl(0,80%,50%)";
   } else {
-    var r = Math.floor(((300 - m) / 300) * 120);
+    var r = Math.floor(((200 - m) / 200) * 120);
     console.log(r);
     return "hsla( " + r.toString() + ", 80%, 50%, 50%) ;";
   }
