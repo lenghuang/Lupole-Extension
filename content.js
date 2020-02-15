@@ -81,6 +81,7 @@ function make_popup(price) {
   popup.style.display = "block";
   popup.style.color = "black";
   popup.style.padding = "5px";
+  popup.style.zIndex = "100";
   popup.style.backgroundColor = color;
   // console.log(color);  // TODO: fix colors somehow?
   popup.style.position = "absolute";

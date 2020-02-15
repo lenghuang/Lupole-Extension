@@ -4,7 +4,7 @@
   "description": "The Alternative Spending Assistant!",
   "content_scripts": [
     {
-      "matches": ["https://www.amazon.com/*"],
+      "matches": ["https://www.amazon.com/*", "https://www.nike.com/*"],
       "js": ["content.js"]
     }
   ],
