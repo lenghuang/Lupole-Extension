@@ -44,11 +44,11 @@ function setColor(pc, ri) {
   var y = dict[ri];
   var m = Math.floor(x / y);
   if (m > 200) {
-    return "hsla(0, 80%, 50%, 50%)";
+    return "hsl(0, 80%, 50%)";
   } else {
     var r = Math.floor(((200 - m) / 200) * 120);
-    // console.log(r);
-    return "hsla( " + r.toString() + ", 80%, 50%, 50%) ;";
+    console.log("hsl( " + r.toString() + ", 80%, 50%)");
+    return "hsl( " + r.toString() + ", 80%, 50%)";
   }
 }
 
@@ -88,8 +88,8 @@ function make_popup(price) {
 
   // When hovering over, show popup
   price.addEventListener("mouseover", event => {
-    popup.style.left = event.pageX + 1 + "px";
-    popup.style.top = event.pageY + 1 + "px";
+    popup.style.left = event.pageX + 2 + "px";
+    popup.style.top = event.pageY + 2 + "px";
     document.body.appendChild(popup);
   });
   // Otherwise don't show popup
