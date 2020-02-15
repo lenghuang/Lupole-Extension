@@ -44,7 +44,7 @@ function setColor(pc, ri) {
   var y = dict[ri];
   var m = Math.floor(x / y);
   if (m > 200) {
-    return "hsl(0,80%,50%)";
+    return "hsla(0,80%,50%,50%)";
   } else {
     var r = Math.floor(((200 - m) / 200) * 120);
     console.log(r);
