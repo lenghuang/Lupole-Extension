@@ -36,9 +36,13 @@ function setColor(pc, ri) {
   var x = parseFloat(pc.slice(1, pc.length));
   var y = dict[ri];
   var m = Math.floor(x / y);
-  var r = Math.floor(m / 2);
-  //return "rgba(" + m.toString() + ", " + r.toString() + ", 0, 20)";
-  return "#ffcf40";
+  if (m > 300) {
+    return "hsl(0,80%,50%)";
+  } else {
+    var r = Math.floor(((300 - m) / 300) * 120);
+    console.log(r);
+    return "hsla( " + r.toString() + ", 80%, 50%, 50%) ;";
+  }
 }
 
 // Function to get text in case of ranges
@@ -86,13 +90,13 @@ if (price != null) {
     document.getElementById("popup").style.cssText =
       "color: black; padding: 5px; background-color: " +
       color +
-      "; display: block;";
+      "display: block;";
   };
   // Otherwise don't show popup
   price.onmouseout = function() {
     document.getElementById("popup").style.cssText =
       "color: black; padding: 5px; background-color: " +
       color +
-      "; display: none;";
+      "display: none;";
   };
 }
