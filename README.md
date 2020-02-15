@@ -1,2 +1,2 @@
 # Lupole-Extension
-A personal project to create a Google Chrome extension.
+A project to create a Google Chrome extension for Tartan Hacks at CMU.
